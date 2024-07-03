@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Pet from "./Pet.jsx";
+import useBreedList from "./useBreedList.js";
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
@@ -7,11 +8,11 @@ const SearchParams = () => {
   let [animal, setAnimal] = useState("");
   let [breed, setBreed] = useState("");
   let [pets, setPets] = useState([]);
-  let breeds = [];
+  let [breeds] = useBreedList(animal);
 
   useEffect(() => {
     requestPets();
-  });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function requestPets() {
     let res = await fetch(
@@ -33,33 +34,44 @@ const SearchParams = () => {
             id="location"
           />
         </label>
+
         <label htmlFor="animal">
           Animal
           <select
+            value={animal}
+            id="animal"
             onChange={(e) => {
               setAnimal(e.target.value);
               setBreed("");
             }}
-            value={animal}
-            id="animal"
+            onBlur={(e) => {
+              setAnimal(e.target.value);
+              setBreed("");
+            }}
           >
             <option />
             {ANIMALS.map((animal) => (
-              <option key={animal}>{animal}</option>
+              <option key={animal} value={animal}>
+                {animal}
+              </option>
             ))}
           </select>
         </label>
+
         <label htmlFor="breed">
           Breed
           <select
-            onChange={(e) => setBreed(e.target.value)}
             value={breed}
             id="breed"
             disabled={breeds.length === 0}
+            onChange={(e) => setBreed(e.target.value)}
+            onBlur={(e) => setBreed(e.target.value)}
           >
             <option />
             {breeds.map((breed) => (
-              <option key={breed}>{breed}</option>
+              <option key={breed} value={breed}>
+                {breed}
+              </option>
             ))}
           </select>
         </label>
