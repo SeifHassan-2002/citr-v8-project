@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 const localCache = {};
 
@@ -18,7 +18,6 @@ export default function useBreedList(animal) {
     async function requestBreedList() {
       setBreedList([]);
       setStatus("loading");
-
       const res = await fetch(
         `http://pets-v2.dev-apis.com/breeds?animal=${animal}`
       );
@@ -28,5 +27,6 @@ export default function useBreedList(animal) {
       setStatus("loaded");
     }
   }, [animal]);
+
   return [breedList, status];
 }
